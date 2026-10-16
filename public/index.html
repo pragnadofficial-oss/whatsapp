@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0d1425">
+  <meta name="description" content="A local-first dashboard for checking suspicious links and message URLs.">
+  <title>CyberShield AI — Link protection</title>
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/results.js" defer></script>
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <div class="shell">
+    <aside class="sidebar">
+      <a class="brand" href="/" aria-label="CyberShield AI home">
+        <span class="brand-mark" aria-hidden="true">C</span>
+        <span><strong>CyberShield</strong><small>PERSONAL SECURITY</small></span>
+      </a>
+      <div class="nav-label">WORKSPACE</div>
+      <a class="nav-item active" href="#overview"><span class="nav-icon">⌂</span>Overview</a>
+      <a class="nav-item" href="#url-scanner"><span class="nav-icon">⌕</span>URL scanner</a>
+      <a class="nav-item" href="#message-check"><span class="nav-icon">▤</span>Message check</a>
+      <a class="nav-item" href="#history"><span class="nav-icon">◷</span>Scan history</a>
+      <a class="nav-item" href="#blocked-links"><span class="nav-icon">⛔</span>App blocklist</a>
+      <div class="sidebar-foot">
+        <div class="privacy-note"><span class="privacy-lock">◆</span><div><strong>Private by design</strong><p>Message text is analyzed locally and is not saved or shared.</p></div></div>
+        <span class="build-label">LOCAL-FIRST PROTECTION</span>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <div class="breadcrumb">Workspace <span>/</span> <strong>Security overview</strong></div>
+        <div class="topbar-right"><span id="connection-pill" class="connection-pill"><i></i><span>Checking connection</span></span><button id="api-key-button" class="quiet-button hidden" type="button">Set API key</button><span class="avatar" aria-hidden="true">CS</span></div>
+      </header>
+
+      <section id="overview" class="page-heading">
+        <div><p class="eyebrow">YOUR SECURITY AT A GLANCE</p><h1>Good evening<span class="heading-dot">.</span></h1><p class="subheading">Check a link before you open it. Your scans run locally by default.</p></div>
+        <div class="protection-card"><span class="live-dot"></span><div><strong>On-demand checks available</strong><small id="protection-copy">Checking cached threat data…</small></div><span class="shield-icon" aria-hidden="true">⬡</span></div>
+      </section>
+
+      <section class="metrics" aria-label="Security status">
+        <article class="metric-card"><div class="metric-top"><span>PROTECTION MODE</span><span class="metric-icon teal">⬡</span></div><strong id="mode-value">LOCAL</strong><p id="mode-copy">Threat checks stay on this device</p></article>
+        <article class="metric-card"><div class="metric-top"><span>CACHED THREATS</span><span class="metric-icon amber">◈</span></div><strong id="threat-count">—</strong><p>Confirmed indicators stored locally</p></article>
+        <article class="metric-card"><div class="metric-top"><span>ML MODEL</span><span class="metric-icon violet">✳</span></div><strong id="model-value">NOT CONFIGURED</strong><p>No trained model or dataset configured</p></article>
+        <article class="metric-card"><div class="metric-top"><span>RECENT SCANS</span><span class="metric-icon blue">◷</span></div><strong id="scan-count">—</strong><p>URL checks saved on this server</p></article>
+      </section>
+
+      <div class="section-title"><div><h2>Check before you click</h2><p>Heuristic checks are useful signals, not a guarantee of safety.</p></div><span class="local-badge"><span></span>LOCAL ANALYSIS</span></div>
+
+      <section class="scan-grid">
+        <article id="url-scanner" class="panel scan-panel">
+          <div class="panel-heading"><div class="panel-icon url-icon">↗</div><div><h3>Scan a URL</h3><p>Inspect a link without opening it.</p></div></div>
+          <form id="url-form">
+            <label for="url-input">Suspicious URL</label>
+            <div class="input-wrap"><span aria-hidden="true">↗</span><input id="url-input" name="url" type="text" inputmode="url" placeholder="example.com or https://example.com/link" maxlength="2048" required autocomplete="url"></div>
+            <label class="consent-row"><input id="external-consent" type="checkbox"><span id="external-consent-copy">External checks are optional. If enabled, this URL is sent to configured providers; VirusTotal may add submitted or queried URLs to its community dataset. Do not share confidential URLs.</span></label>
+            <button class="primary-button" type="submit" aria-busy="false"><span>Scan URL</span><span aria-hidden="true">→</span></button>
+          </form>
+          <div id="url-result" class="result-box hidden" aria-live="polite"></div>
+        </article>
+
+        <article id="message-check" class="panel scan-panel">
+          <div class="panel-heading"><div class="panel-icon message-icon">▤</div><div><h3>Check a message</h3><p>Paste message text to inspect any links it contains.</p></div></div>
+          <form id="message-form">
+            <label for="message-input">Message text</label>
+            <textarea id="message-input" name="message" rows="4" maxlength="12000" placeholder="Paste a message here. Do not include passwords, OTPs, or private details." required></textarea>
+            <div class="privacy-caption"><span aria-hidden="true">◆</span> Processed in memory only. Not saved or sent to third parties.</div>
+            <button class="primary-button secondary-button" type="submit"><span>Analyze message links</span><span aria-hidden="true">→</span></button>
+          </form>
+          <div id="message-result" class="result-box hidden" aria-live="polite"></div>
+        </article>
+      </section>
+
+      <section id="history" class="panel history-panel">
+        <div class="history-heading"><div><h2>Recent scan history</h2><p>Only hostnames and analysis summaries are kept. Message text is never recorded.</p></div><button id="delete-history" class="quiet-button" type="button">Delete history</button></div>
+        <div id="history-list" class="history-list"><div class="empty-state">Loading scan history…</div></div>
+      </section>
+
+      <section id="blocked-links" class="panel history-panel">
+        <div class="history-heading"><div><h2>Blocked in this app</h2><p>Confirmed malicious links are blocked only by CyberShield AI. Nothing is blocked on your device or in other apps.</p></div><strong id="blocked-count" class="blocked-count">0</strong></div>
+        <div id="blocked-list" class="blocked-list"><div class="empty-state">Loading application blocklist…</div></div>
+      </section>
+
+      <footer class="page-footer"><span>CyberShield AI · Local-first link safety</span><span>HTTPS, short links, and heuristic “safe-looking” results are not proof of safety.</span></footer>
+    </main>
+  </div>
+
+  <dialog id="api-key-dialog" class="key-dialog">
+    <form id="api-key-form" method="dialog">
+      <h2>Connect to your protected server</h2>
+      <p>Your server requires an API key. It is kept in this tab's session storage and sent only to this server.</p>
+      <label for="api-key-input">API key</label>
+      <input id="api-key-input" type="password" autocomplete="off" required>
+      <div class="dialog-actions"><button class="quiet-button" type="button" id="cancel-api-key">Cancel</button><button class="primary-button" type="submit">Connect</button></div>
+      <p id="api-key-error" class="inline-error hidden"></p>
+    </form>
+  </dialog>
+</body>
+</html>
